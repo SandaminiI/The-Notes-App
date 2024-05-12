@@ -19,10 +19,11 @@ class MainActivity : AppCompatActivity() {
         setupViewModel()
     }
 
+    // Function to set up the ViewModel
     private fun setupViewModel(){
         val noteRepository = NoteRepository(NoteDatabase(this))
         val viewModelProviderFactory = NoteViewModelFactory(application,noteRepository)
-        noteViewModel = ViewModelProvider(this,viewModelProviderFactory)[NoteViewModel::class.java]
 
+        noteViewModel = ViewModelProvider(this,viewModelProviderFactory)[NoteViewModel::class.java]
     }
 }
