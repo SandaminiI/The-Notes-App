@@ -19,7 +19,7 @@ import com.example.thenotesapp.databinding.FragmentAddNoteBinding
 import com.example.thenotesapp.model.Note
 import com.example.thenotesapp.viewmodel.NoteViewModel
 
-class AddNoteFragment : Fragment(R.layout.fragment_add_note),MenuProvider {
+class AddNoteFragment : Fragment(R.layout.fragment_add_note), MenuProvider {
 
     private var addNoteBinding: FragmentAddNoteBinding? = null
     private val binding get() = addNoteBinding !!
@@ -27,47 +27,54 @@ class AddNoteFragment : Fragment(R.layout.fragment_add_note),MenuProvider {
     private lateinit var notesViewModel: NoteViewModel
     private lateinit var addNoteView: View
 
+    // Inflating the layout for this fragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        addNoteBinding = FragmentAddNoteBinding.inflate(inflater,container,false)
+        addNoteBinding = FragmentAddNoteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
+        // Initializing ViewModel and view
         notesViewModel = (activity as MainActivity).noteViewModel
         addNoteView = view
+
+        // Adding menu provider
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun saveNote(view: View){
+    // Function to save a note
+    private fun saveNote(view: View) {
         val noteTitle = binding.addNoteTitle.text.toString().trim()
         val noteDesc = binding.addNoteDesc.text.toString().trim()
 
-        if (noteTitle.isNotEmpty()){
-            val note = Note(0,noteTitle,noteDesc)
+        if (noteTitle.isNotEmpty()) {
+            val note = Note(0, noteTitle, noteDesc)
             notesViewModel.addNote(note)
 
-            Toast.makeText(addNoteView.context,"Note Saved",Toast.LENGTH_SHORT).show()
-            view.findNavController().popBackStack(R.id.homeFragment,false)
-        }else{
-            Toast.makeText(addNoteView.context,"Please enter note title",Toast.LENGTH_SHORT).show()
+            Toast.makeText(addNoteView.context, "Note Saved", Toast.LENGTH_SHORT).show()
+
+            // Navigating back to home fragment after saving note
+            view.findNavController().popBackStack(R.id.homeFragment, false)
+        } else {
+            Toast.makeText(addNoteView.context, "Please enter note title", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // Creating menu
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menu.clear()
-        menuInflater.inflate(R.menu.menu_add_note,menu)
+        menuInflater.inflate(R.menu.menu_add_note, menu)
     }
 
+    // Handling menu item clicks
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when(menuItem.itemId){
+        return when (menuItem.itemId) {
             R.id.saveMenu -> {
                 saveNote(addNoteView)
                 true
@@ -80,5 +87,4 @@ class AddNoteFragment : Fragment(R.layout.fragment_add_note),MenuProvider {
         super.onDestroy()
         addNoteBinding = null
     }
-
 }
